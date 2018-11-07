@@ -43,6 +43,14 @@ public class MeasureTest {
 
             assertThat(measure1, is(measure2));
         }
+
+        @Test
+        void fahrenheitAndCelsius() {
+            Measure measure1 = new Measure(80, Unit.FAHRENHEIT);
+            Measure measure2 = new Measure(26.6667, Unit.CELSIUS);
+
+            assertThat(measure1, is(measure2));
+        }
     }
 
     @DisplayName("Should not be equal when the volume is amount between")

@@ -29,4 +29,12 @@ public class Measure {
     public Measure plus(Measure other) {
         return new Measure(this.value + other.unit.toUnit(other.value, this.unit), this.unit);
     }
+
+    @Override
+    public String toString() {
+        return "Measure{" +
+                "value=" + value +
+                ", unit=" + unit +
+                '}';
+    }
 }
