@@ -27,6 +27,9 @@ public class Measure {
     }
 
     public Measure plus(Measure other) {
+        if (!this.unit.isOperationAllowed() || !other.unit.isOperationAllowed()) {
+            throw new RuntimeException("Addition is not supported in CELSIUS scale");
+        }
         return new Measure(this.value + other.unit.toUnit(other.value, this.unit), this.unit);
     }
 

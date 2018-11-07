@@ -4,9 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import javax.naming.OperationNotSupportedException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MeasureTest {
     @DisplayName("Should be equal when there is the same amount between")
@@ -102,5 +105,12 @@ public class MeasureTest {
         Measure measure = new Measure(3, Unit.LITERS).plus(new Measure(0.792516, Unit.GALLONS));
 
         assertThat(measure, is(new Measure(6, Unit.LITERS)));
+    }
+
+    @Test
+    void shouldNotAllowToAddMeasuresInCelsiusScale() {
+        Measure measure1 = new Measure(1, Unit.CELSIUS);
+
+        assertThrows(RuntimeException.class, () -> measure1.plus(measure1));
     }
 }

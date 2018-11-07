@@ -3,19 +3,20 @@ package measure;
 import java.util.function.Function;
 
 public class Unit {
-    public final static Unit METERS = new Unit();
+    public final static Unit METERS = new Unit(true);
     public final static Unit FEET = new Unit(multiplyByRate(0.3048), divideByRate(0.3048), Unit.METERS);
     public final static Unit INCHES = new Unit(multiplyByRate(0.0254), divideByRate(0.0254), Unit.METERS);
     public final static Unit YARDS = new Unit(multiplyByRate(0.9144), divideByRate(0.9144), Unit.METERS);
     public final static Unit CENTIMETERS = new Unit(multiplyByRate(0.01), divideByRate(0.01), Unit.METERS);
-    public final static Unit LITERS = new Unit();
+    public final static Unit LITERS = new Unit(true);
     public final static Unit GALLONS = new Unit(multiplyByRate(3.7854), divideByRate(3.7854), Unit.LITERS);
-    public static final Unit CELSIUS = new Unit();
+    public static final Unit CELSIUS = new Unit(false);
     public static final Unit FAHRENHEIT = new Unit(amount -> (amount - 32) * 5/9, amount -> amount *  9/5 + 32, Unit.CELSIUS);
 
     private final Function<Double, Double> toBase;
     private final Unit baseUnit;
     private final Function<Double, Double> fromBase;
+    private final boolean isAddAllowed;
 
     private static Function<Double, Double> multiplyByRate(double ratio) {
         return amount -> amount * ratio;
@@ -29,12 +30,18 @@ public class Unit {
         this.toBase = toBase;
         this.fromBase = fromBase;
         this.baseUnit = baseUnit;
+        this.isAddAllowed = true;
     }
 
-    Unit() {
+    Unit(boolean isAddAllowed) {
         this.baseUnit = this;
         this.toBase = amount -> amount;
         this.fromBase = toBase;
+        this.isAddAllowed = isAddAllowed;
+    }
+
+    public boolean isOperationAllowed() {
+        return isAddAllowed;
     }
 
     public double toBaseUnit(double amount) {
