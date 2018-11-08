@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AttendantTest {
+
     @Test
     void shouldParkACarInALotWithSpots() {
-        Attendant attendant = new Attendant(new ParkingLot(1));
+        Attendant attendant = new Attendant(new ParkingLot(1, new Owner()));
         Car car = new Car();
 
         assertTrue(attendant.park(car));
@@ -16,7 +17,8 @@ public class AttendantTest {
 
     @Test
     void shouldParkTheCarWhenMultipleParkingLotsHaveSpots() {
-        Attendant attendant = new Attendant(new ParkingLot(0), new ParkingLot(4), new ParkingLot(2));
+        Attendant attendant = new Attendant(new ParkingLot(0, new Owner()),
+                new ParkingLot(4, new Owner()));
 
         Car car = new Car();
 
@@ -25,8 +27,8 @@ public class AttendantTest {
 
     @Test
     void shouldNotParkTheCarWhenThereIsNoSpaceInDifferentLots() {
-        Attendant attendant = new Attendant(new ParkingLot(0), new ParkingLot(0), new ParkingLot(0));
-
+        Attendant attendant = new Attendant(new ParkingLot(0, new Owner()),
+                new ParkingLot(0, null));
         Car car = new Car();
 
         assertFalse(attendant.park(car));

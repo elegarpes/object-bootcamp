@@ -2,37 +2,39 @@ package parkinglot;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 
 public class ParkingLotTest {
     @Test
-    void shouldAcceptACar() {
-        ParkingLot parkingLot = new ParkingLot(1);
+    void shouldAcceptACarIsLessThan80PercentFull() {
+        ParkingLot parkingLot = new ParkingLot(1, new Owner());
         Car car = new Car();
 
         assertThat(parkingLot.accept(car), is(true));
     }
 
     @Test
-    void shouldNotAcceptACarIfTheLotIsFull() {
-        ParkingLot parkingLot = new ParkingLot(1);
-        Car car1 = new Car();
-        Car car2 = new Car();
+    void shouldNotAcceptACarIfTheLotIsMoreThan80PercentFull() {
+        ParkingLot parkingLot = new ParkingLot(5, new Owner());
 
-        assertThat(parkingLot.accept(car1), is(true));
-        assertThat(parkingLot.accept(car2), is(false));
-
+        assertTrue(parkingLot.accept(new Car()));
+        assertTrue(parkingLot.accept(new Car()));
+        assertTrue(parkingLot.accept(new Car()));
+        assertTrue(parkingLot.accept(new Car()));
+        assertFalse(parkingLot.accept(new Car()));
     }
 
     @Test
     void shouldRemoveACar() {
-        ParkingLot parkingLot = new ParkingLot(1);
+        ParkingLot parkingLot = new ParkingLot(1, new Owner());
         Car car = new Car();
         parkingLot.accept(car);
 
@@ -40,13 +42,24 @@ public class ParkingLotTest {
     }
 
     @Test
-    void shouldNotifyAttendantsWhenCapacityChanges() {
-        ParkingLot parkingLot = new ParkingLot(3);
-        Attendant parkingLotObserver = mock(Attendant.class);
-
-        parkingLot.subscribe(parkingLotObserver);
+    void shouldNotNotifyParkingLotOwnerWhenUsageIsBelow75Percent() {
+        Owner owner = mock(Owner.class);
+        ParkingLot parkingLot = new ParkingLot(2, owner);
         parkingLot.accept(new Car());
 
-        verify(parkingLotObserver).capacityChanged(parkingLot,1, 3);
+        verify(owner, never()).usageOver75Percent(parkingLot);
+    }
+
+    @Test
+    void shouldNotifyParkingLotOwnerWhenUsageIsOver75Percent() {
+        Owner owner = mock(Owner.class);
+        ParkingLot parkingLot = new ParkingLot(5, owner);
+
+        parkingLot.accept(new Car());
+        parkingLot.accept(new Car());
+        parkingLot.accept(new Car());
+        parkingLot.accept(new Car());
+
+        verify(owner).usageOver75Percent(parkingLot);
     }
 }

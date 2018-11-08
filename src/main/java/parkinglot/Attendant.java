@@ -18,6 +18,4 @@ public class Attendant {
         return false;
     }
 
-    public void capacityChanged(ParkingLot parkingLot, int numberOfCars, int parkingLotCapacity) {
-    }
 }
